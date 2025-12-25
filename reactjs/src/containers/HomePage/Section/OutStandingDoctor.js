@@ -54,6 +54,29 @@ class OutStandingDoctor extends Component {
                   }
                   let nameVi = `${item.positionData.valueVi}, ${item.lastName} ${item.firstName}`;
                   let nameEn = `${item.positionData.valueEn}, ${item.firstName} ${item.lastName}`;
+
+                  // derive specialty name from available fields (fallback safe lookup)
+                  let specialtyName = "";
+                  if (
+                    item &&
+                    item.Doctor_Infor &&
+                    item.Doctor_Infor.specialtyData
+                  ) {
+                    specialtyName =
+                      language === LANGUAGES.VI
+                        ? item.Doctor_Infor.specialtyData.nameVi ||
+                          item.Doctor_Infor.specialtyData.name
+                        : item.Doctor_Infor.specialtyData.nameEn ||
+                          item.Doctor_Infor.specialtyData.name;
+                  } else if (item && item.specialtyData) {
+                    specialtyName =
+                      language === LANGUAGES.VI
+                        ? item.specialtyData.nameVi || item.specialtyData.name
+                        : item.specialtyData.nameEn || item.specialtyData.name;
+                  } else if (item && item.specialty) {
+                    specialtyName = item.specialty;
+                  }
+
                   return (
                     <div
                       className="section-customize"
@@ -71,7 +94,7 @@ class OutStandingDoctor extends Component {
                           <div>
                             {language === LANGUAGES.VI ? nameVi : nameEn}
                           </div>
-                          <div>Cơ Xương Khớp</div>
+                          <div>{specialtyName}</div>
                         </div>
                       </div>
                     </div>

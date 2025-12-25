@@ -4,7 +4,7 @@ import "./HomeHeader.scss";
 import logo from "../../assets/images/logo.svg";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
-import { changeLanguageApp } from "../../store/actions";
+import { changeLanguageApp, processLogout } from "../../store/actions";
 import { withRouter } from "react-router";
 class HomeHeader extends Component {
   changeLanguage = (language) => {
@@ -15,6 +15,15 @@ class HomeHeader extends Component {
       this.props.history.push("/home");
     }
   };
+
+  handleLogout = () => {
+    // dispatch logout action and redirect to login
+    this.props.processLogout();
+    if (this.props.history) {
+      this.props.history.push("/login");
+    }
+  };
+
   render() {
     let language = this.props.language;
     return (
@@ -76,6 +85,11 @@ class HomeHeader extends Component {
                 <i className="fas fa-question-circle"></i>
                 <FormattedMessage id="homeheader.support" />
               </div>
+              {this.props.isLoggedIn && (
+                <div className="btn btn-logout" onClick={this.handleLogout}>
+                  <i className="fas fa-sign-out-alt"></i>
+                </div>
+              )}
               <div
                 className={
                   language === LANGUAGES.VI
@@ -189,6 +203,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
+    processLogout: () => dispatch(processLogout()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(HomeHeader);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(HomeHeader)
+);
